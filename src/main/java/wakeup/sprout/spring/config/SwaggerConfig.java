@@ -6,13 +6,23 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+import lombok.RequiredArgsConstructor;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import wakeup.sprout.spring.common.util.swagger.ErrorResponseOpenApiCustomizer;
+import wakeup.sprout.spring.common.util.swagger.ErrorResponseOperationCustomizer;
 
 import java.util.Arrays;
 
 @Configuration
+@EnableWebMvc
+@RequiredArgsConstructor
 public class SwaggerConfig {
+    private final ErrorResponseOpenApiCustomizer errorResponseOpenApiCustomizer;
+    private final ErrorResponseOperationCustomizer errorResponseOperationCustomizer;
+
     @Bean
     public OpenAPI config() {
         String jwt = "JWT";
@@ -33,6 +43,16 @@ public class SwaggerConfig {
                 ))
                 .addSecurityItem(securityRequirement)
                 .components(components);
+    }
+
+    @Bean
+    public GroupedOpenApi publicApi() {
+        return GroupedOpenApi.builder()
+                .group("public")
+                .pathsToMatch("/api/**")
+                .addOpenApiCustomizer(errorResponseOpenApiCustomizer)
+                .addOperationCustomizer(errorResponseOperationCustomizer)
+                .build();
     }
 
     private Info apiInfo() {

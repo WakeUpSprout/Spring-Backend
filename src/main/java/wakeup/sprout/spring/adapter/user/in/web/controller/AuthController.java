@@ -12,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import wakeup.sprout.spring.adapter.user.in.web.dto.request.LoginRequest;
 import wakeup.sprout.spring.adapter.user.in.web.dto.response.JWTResponse;
+import wakeup.sprout.spring.common.annotation.swagger.ApiErrorResponse;
+import wakeup.sprout.spring.common.annotation.swagger.ApiErrorResponses;
+import wakeup.sprout.spring.common.exception.GlobalErrorCode;
 
 @Tag(name = "Auth API", description = "인증 관련 API")
 @RequiredArgsConstructor
@@ -34,6 +37,20 @@ public class AuthController {
                     )
             }
     )
+    @ApiErrorResponses({
+            @ApiErrorResponse(
+                    responseCode = "400",
+                    description = "잘못된 요청",
+                    errorCodeClass = GlobalErrorCode.class,
+                    errorCodes = {"BAD_REQUEST"}
+            ),
+            @ApiErrorResponse(
+                    responseCode = "500",
+                    description = "서버 에러",
+                    errorCodeClass = GlobalErrorCode.class,
+                    errorCodes = {"INTERNAL_SERVER_ERROR", "REDIS_ERROR"}
+            )
+    })
     @PostMapping(path = "/social")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(new JWTResponse("a", "b"));
