@@ -7,7 +7,6 @@ import wakeup.sprout.spring.common.exception.ErrorCode;
 import wakeup.sprout.spring.common.exception.ErrorResponse;
 import wakeup.sprout.spring.common.util.mapper.CustomTimeStamp;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 

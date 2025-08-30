@@ -10,11 +10,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import wakeup.sprout.spring.adapter.user.in.web.dto.request.LoginRequest;
+import wakeup.sprout.spring.adapter.user.in.web.dto.request.LoginOrSignupRequest;
 import wakeup.sprout.spring.adapter.user.in.web.dto.response.JWTResponse;
 import wakeup.sprout.spring.common.annotation.swagger.ApiErrorResponse;
 import wakeup.sprout.spring.common.annotation.swagger.ApiErrorResponses;
 import wakeup.sprout.spring.common.exception.GlobalErrorCode;
+import wakeup.sprout.spring.domain.user.exception.UserErrorCode;
 
 @Tag(name = "Auth API", description = "인증 관련 API")
 @RequiredArgsConstructor
@@ -45,6 +46,12 @@ public class AuthController {
                     errorCodes = {"BAD_REQUEST"}
             ),
             @ApiErrorResponse(
+                    responseCode = "401",
+                    description = "인증 실패",
+                    errorCodeClass = UserErrorCode.class,
+                    errorCodes = {"KAKAO_LOGIN_FAILED", "GOOGLE_LOGIN_FAILED", "APPLE_LOGIN_FAILED"}
+            ),
+            @ApiErrorResponse(
                     responseCode = "500",
                     description = "서버 에러",
                     errorCodeClass = GlobalErrorCode.class,
@@ -52,7 +59,7 @@ public class AuthController {
             )
     })
     @PostMapping(path = "/social")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginOrSignupRequest request) {
         return ResponseEntity.ok(new JWTResponse("a", "b"));
     }
 }
